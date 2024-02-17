@@ -1,3 +1,5 @@
+// show.js
+
 import { useLoaderData, Form } from "react-router-dom";
 
 const Show = () => {
@@ -6,8 +8,7 @@ const Show = () => {
 
     return (
         <div className="bookmark">
-            <h1>{bookmark.title}</h1>
-            <a href={bookmark.url} target="_blank" rel="noreferrer">{bookmark.url}</a>
+
 
             <h2>Update {bookmark.title}</h2>
             <Form action={`/update/${bookmark._id}`} method='post'>

@@ -5,9 +5,53 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: aqua;
+  text-align: center;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.bookmark-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.bookmark-card h2 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.bookmark-card p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.bookmark-card a {
+  display: block;
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+
+.bookmark-card .bookmark-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bookmark-card .bookmark-actions button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.bookmark-card .bookmark-actions button i {
+  color: #007bff;
+}
+

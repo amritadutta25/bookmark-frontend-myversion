@@ -1,8 +1,51 @@
+// index.js
+
+import React, { useState } from 'react';
+
 import { Link, useLoaderData, Form } from "react-router-dom";
 
 const Landing = () => {
-    const bookmarks = useLoaderData();
-    console.log(bookmarks);
+    const [bookmarks, setBookmarks] = useState(useLoaderData());
+    const [editingBookmarkId, setEditingBookmarkId] = useState(null);
+    const [updatedBookmarkTitle, setUpdatedBookmarkTitle] = useState('');
+    const [updatedBookmarkUrl, setUpdatedBookmarkUrl] = useState('');
+
+    const handleUpdate = async (id) => {
+        // Update the bookmark with the new title and URL
+        await fetch(`/update/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: updatedBookmarkTitle,
+                url: updatedBookmarkUrl,
+            }),
+        });
+        // Update the state with the updated bookmark
+        setBookmarks(bookmarks.map(bookmark => {
+            if (bookmark._id === id) {
+                return {
+                    ...bookmark,
+                    title: updatedBookmarkTitle,
+                    url: updatedBookmarkUrl,
+                };
+            }
+            return bookmark;
+        }));
+        // Clear the editing state
+        setEditingBookmarkId(null);
+        setUpdatedBookmarkTitle('');
+        setUpdatedBookmarkUrl('');
+    };
+
+    const handleDelete = async (id) => {
+        await fetch(`/delete/${id}`, {
+            method: 'POST',
+        });
+        // Remove the deleted bookmark from the state
+        setBookmarks(bookmarks.filter(bookmark => bookmark._id !== id));
+    };
 
     return (
         <div>
@@ -14,19 +57,33 @@ const Landing = () => {
             </Form>
 
             <h3>Bookmarks</h3>
-            {bookmarks.map(bookmark => {
-                return (
-                    <div key={bookmark._id} className="bookmark">
-                        <Link to={`/${bookmark._id}`}>
-                            <h1>{bookmark.title}</h1>
-                        </Link>
-                        <a href={bookmark.url} target="_blank" rel="noreferrer">{bookmark.url}</a>
+            <div className="bookmark-card-list">
+                {bookmarks.map(bookmark => (
+                    <div key={bookmark._id} className="bookmark-card">
+                        {editingBookmarkId === bookmark._id ? (
+                            <>
+                                <input type='text' value={updatedBookmarkTitle} onChange={(e) => setUpdatedBookmarkTitle(e.target.value)} />
+                                <input type='text' value={updatedBookmarkUrl} onChange={(e) => setUpdatedBookmarkUrl(e.target.value)} />
+                                <button onClick={() => handleUpdate(bookmark._id)}>Save</button>
+                            </>
+                        ) : (
+                            <>
+                                <button className="bookmark-button" onClick={() => window.open(bookmark.url, '_blank')}>
+                                    <h2>{bookmark.title}</h2>
+                                    <p>{bookmark.description}</p>
+                                </button>
+                                <div className="bookmark-actions">
+                                    <button onClick={() => {setEditingBookmarkId(bookmark._id); setUpdatedBookmarkTitle(bookmark.title); setUpdatedBookmarkUrl(bookmark.url);}}><i className="fas fa-pencil-alt"></i></button>
+                                    <button onClick={() => handleDelete(bookmark._id)}><i className="fas fa-trash-alt"></i></button>
+                                </div>
+                            </>
+                        )}
                     </div>
-                )
-            })}
+                ))}
+            </div>
         </div>
-
-    )
-}
+    );
+};
 
 export default Landing;
+
